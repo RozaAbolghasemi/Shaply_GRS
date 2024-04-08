@@ -3,6 +3,78 @@ import numpy as np
 import csv
 from sklearn.metrics.pairwise import cosine_similarity
 
+
+
+def CarData_preprocessing():
+    User_num = 60
+    Item_num = 10
+
+    ComparisonMatrix = np.zeros((User_num, Item_num, Item_num))
+    
+    filename = "./CarDataset/prefs1.csv"
+    # Open the CSV file and read line by line
+    with open(filename, newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)  # Skip the header row
+        for row in reader:
+            UserID = int(row[0])-1
+            Item1ID = int(row[1])-1
+            Item2ID = int(row[2])-1
+            ComparisonMatrix[UserID][Item1ID][Item2ID] = 1
+            ComparisonMatrix[UserID][Item2ID][Item1ID] = 0
+
+
+    filename = "./CarDataset/PairwiseRates_Car.csv"
+    with open(filename, "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        header = ["User_ID", "Item1_ID", "Item2_ID", "PairwiseScore"]
+        writer.writerow(header)
+    
+        for user in range(User_num):
+            for item1 in range(Item_num):
+                for item2 in range(item1+1, Item_num):
+                    List = [user+1, item1+1 ,item2+1, ComparisonMatrix[user][item1][item2]]
+                    writer.writerow(List)
+    
+    PairwiseRates = pd.read_csv("./CarDataset/PairwiseRates_Car.csv")  # .to_numpy()
+    # Item_pairs is a list containing paired items
+    ii, iii = PairwiseRates.shape
+    Item_pairs = []
+    for i in range(ii):
+        Item_pairs.append((PairwiseRates.Item1_ID[i], PairwiseRates.Item2_ID[i]))
+    unique_Item_pairs = list(dict.fromkeys(Item_pairs))
+    print("*")
+
+    # To make access to indexes easier, dictionaries are used:
+    UniqueUserIDs = np.unique(PairwiseRates.User_ID)
+    unique_Item_pairs
+    dict_index2user = {}
+    keys = range(len(UniqueUserIDs))
+    values = UniqueUserIDs
+    for i in keys:
+        dict_index2user[values[i]] = i
+
+    dict_index2itempairs = {}
+    keys = range(len(unique_Item_pairs))
+    values = unique_Item_pairs
+    for i in keys:
+        dict_index2itempairs[values[i]] = i
+    print("**")
+
+    # Mtrix R:   Rows:unique users   Columns: Unique Item pairs
+    R = np.ones([len(UniqueUserIDs), len(unique_Item_pairs)])
+    for row in range(len(PairwiseRates)):
+        u = dict_index2user[PairwiseRates.User_ID[row]]
+        i = dict_index2itempairs[(
+            PairwiseRates.Item1_ID[row], PairwiseRates.Item2_ID[row])]
+        R[u][i] = PairwiseRates.PairwiseScore[row]
+                
+    return R
+
+
+
+
+
 def FoodData_preprocessing():
     User_num = 20
     Item_num = 6
