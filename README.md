@@ -8,7 +8,22 @@ The following figure illustrates the process of using Shapley value for making g
 <img style="width: 100%;" src="https://github.com/RozaAbolghasemi/Shaply_GRS/blob/main/Shapley_GRS3.png">
 </p>
 
+
 ## Execution Dependencies
+There are 3 files for clustering the users. The first two files use GNN to calculate the user embedding on car and food datasets, and the other one, use matrix factorization:
+```
+Clustering_Diversity_SimGNN_CarData.ipynb
+Clustering_Diversity_SimGNN_FoodData.ipynb
+Clustering_Diversity.py
+```
+After running the codes for clustering and saving the users IDs for each cluster (group), You can run one of the following codes to make group recommendation:
+```
+shapleyvalue_GcPP.py
+shapleyvalue_random.py
+```
+
+
+## Requirements
 We are using pandas, numpy, and sklearn. Install them by running:
 ```
 pip install numpy
