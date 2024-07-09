@@ -19,7 +19,7 @@ Clustering_Diversity.py
 After running the codes for clustering and saving the users IDs for each cluster (group), You can run one of the following codes to make group recommendation:
 ```
 shapleyvalue_GcPP.py
-shapleyvalue_random.py
+shapleyvalue_Random.py
 ```
 
 
